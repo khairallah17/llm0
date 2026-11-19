@@ -1,0 +1,14 @@
+parameters:
+  user_full_name: mohammed khairallah
+  links:
+    # PERSONAL BLOG
+    - "https://khairallah17.github.io/posts/logistic-regression/"
+    - "https://khairallah17.github.io/posts/ai-support-ticket-triage-agent/"
+    - "https://khairallah17.github.io/posts/lexicon-RAG-system/"
+    - "https://khairallah17.github.io/posts/linear-regression/"
+    - "https://khairallah17.github.io/posts/Software-Engineering/"
+    # GITHUB
+    - "https://github.com/khairallah17/ai-agent-tickets-management"
+    - "https://github.com/khairallah17/doc-intelligence"
+    - "https://github.com/khairallah17/red-tetris"
+    - "https://github.com/khairallah17/linear_regression"

@@ -18,6 +18,9 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
     id: UUID4 = Field(default_factory=uuid.uuid4)
 
+    # def __init__(self, name, bases, dict, /, **kwds):
+    #     super().__init__(name, bases, dict, **kwds)
+
     def __eq__(self, value: object) -> bool:
 
         if not isinstance(value, self.__class__):
@@ -69,6 +72,7 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
             return None
 
+    @classmethod
     def get_or_create(cls: Type[T], **filter_options) -> T:
         collection = _database[cls.get_collection_name()]
 
@@ -86,3 +90,68 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
 
         except errors.OperationFailure:
             logger.exception(f"Failed to retreive document with filter options: {filter_options}")
+            raise
+
+    @classmethod
+    def bulk_insert(cls:type[T], documents: list[T], **kwargs) -> bool:
+
+        collection = _database[cls.get_collection_name()]
+
+        try:
+
+            collection.insert_many([
+                doc.to_mongo(**kwargs)
+                for doc in documents
+            ])
+
+        except (errors.WriteError, errors.BulkWriteError):
+            logger.error(f"Failed to insert documents of type {cls.__name__}")
+
+    @classmethod
+    def find(cls: Type[T], **filter_options) -> T | None:
+
+        collection = _database[cls.get_collection_name()]
+
+        try:
+
+            instance = collection.find_one(filter_options)
+
+            if instance:
+                return cls.from_mongo(instance)
+
+            return None
+
+        except errors.OperationFailure:
+            logger.error("Failed to retrieve document")
+
+            return None
+
+    @classmethod
+    def bulk_find(cls: Type[T], **filter_options) -> list[T]:
+
+        collection = _database[cls.get_collection_name()]
+
+        try:
+
+            instances = collection.find_many(filter_options)
+
+            return [
+                document
+                for instance in instances
+                if (document := cls.from_mongo(instance)) is not None
+            ]
+
+        except errors.OperationFailure:
+            logger.error("Failed to retrieve Documents")
+
+            return []
+
+    @classmethod
+    def get_collection_name(cls: Type[T]) -> str:
+
+        if not hasattr(cls, "Settings") or not hasattr(cls.Settings, "name"):
+            raise ImproperlyConfigured(
+                "Document should define a Settings configuration class with the name of the collection"
+            )
+
+        return cls.Settings.name

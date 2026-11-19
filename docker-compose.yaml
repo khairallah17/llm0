@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+
+  mongodb:
+    container_name: mongodb
+    image: mongodb/mongodb-atlas-local
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=root
+      - MONGODB_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - mongo_data:/data/db
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=zenml
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql_data:/vat/lib/mysql
+
+  zenml:
+    container_name: zenml
+    image: zenmldocker/zenml-server
+    ports:
+      - "8080:8080"
+    environment:
+      - ZENML_STORE_URL=mysql://root:password@mysql:3306/zenml
+    links:
+      - mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: on-failure
+
+volumes:
+  mysql_data:
+  mongo_data:

@@ -1,0 +1,24 @@
+[project]
+name = "llm-engineer"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "khairallah",email = "med.khairallah3@gmail.com"}
+]
+requires-python = ">=3.14"
+dependencies = [
+]
+
+[project.scripts]
+run_data_etl_mohammed = "python -m"
+
+[dependency-groups]
+dev = [
+    "poe (>=0.1.0,<0.2.0)"
+]
+
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

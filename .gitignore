@@ -1,2 +1,5 @@
 .venv/
 .env
+mysql/
+mongo/
+__pycache__/
