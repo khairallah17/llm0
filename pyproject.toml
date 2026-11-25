@@ -13,6 +13,7 @@ dependencies = [
 run-data-etl-test = "echo 'It is working'"
 run-hello-pipeline = "python -m tools.run"
 run-data-etl-mohammed = "python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl_mohammed"
+run-data-etl = "python -m tools.run"
 
 [dependency-groups]
 dev = [

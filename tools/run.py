@@ -1,18 +1,20 @@
-from zenml import pipeline, step
-from zenml.logger import get_logger
+from pathlib import Path
+from datetime import datetime as dt
+from pipelines import data_etl
 
-logger = get_logger(__name__)
 
-@step
-def say_hello() -> str:
-    logger.info("Excuting say_hello step")
-    return "Hello World!"
+def main():
 
-@pipeline
-def hello_pipeline():
-    say_hello()
+    root_dir = Path(__file__).resolve().parent.parent
+    pipeline_args = {
+        "enable_cache": True
+    }
+    
+    run_args_etl = {}
+    pipeline_args["config_path"] = root_dir / "configs" / "digital_data_etl_mohammed.yaml"
+    assert pipeline_args["config_path"].exists(), f"Config file not found: {pipeline_args["config_path"]}"
+    pipeline_args["run_name"] = f"export_artifact_to_json_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+    data_etl.with_options(**pipeline_args)(**run_args_etl)
 
 if __name__ == "__main__":
-    run = hello_pipeline()
-    out = run.steps["say_hello"].outputs["output"][0].load()
-    logger.info(f"Step returned: {out}")
+    main()

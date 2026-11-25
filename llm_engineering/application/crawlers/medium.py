@@ -1,4 +1,4 @@
-from bs4 import BeautifullSoup
+from bs4 import BeautifulSoup
 from loguru import logger
 
 from llm_engineering.domain.documents import ArticleDocument

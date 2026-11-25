@@ -6,6 +6,7 @@ import shutil
 from loguru import logger
 from llm_engineering.application.crawlers.base import BaseCrawler
 
+from llm_engineering.domain.documents import RepositoryDocument
 
 class GithubCrawler(BaseCrawler):
 
