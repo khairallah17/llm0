@@ -25,7 +25,7 @@ class MediumCrawler(BaseSeleniumCrawler):
         self.driver.get(link)
         self.scroll_page()
 
-        soup = BeautifullSoup(self.driver.page_source, "html.parser")
+        soup = BeautifulSoup(self.driver.page_source, "html.parser")
         title = soup.find_all("h1", class_="pw-post-title")
         subtitle = soup.find_all("h2", class_="pw-subtitle-pargraph")
 

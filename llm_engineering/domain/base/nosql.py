@@ -83,6 +83,8 @@ class NoSQLBaseDocument(BaseModel, Generic[T], ABC):
             if instance:
                 return cls.from_mongo(instance)
 
+            logger.info(f"Filter Options => {filter_options}")
+
             new_instance = cls(**filter_options)
             new_instance = new_instance.save()
 

@@ -1,13 +1,14 @@
 from pathlib import Path
 from datetime import datetime as dt
 from pipelines import data_etl
+from pipelines.hello import hello_pipeline
 
 
 def main():
 
     root_dir = Path(__file__).resolve().parent.parent
     pipeline_args = {
-        "enable_cache": True
+        "enable_cache": False
     }
     
     run_args_etl = {}

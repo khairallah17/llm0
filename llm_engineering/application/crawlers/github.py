@@ -23,7 +23,7 @@ class GithubCrawler(BaseCrawler):
             return
 
         logger.info(f"Starting scrapping Github repo: {link}")
-        repo_name = link.strip("/")[-1]
+        repo_name = link.rstrip("/").split("/")[-1]
 
         local_temp = tempfile.mkdtemp()
 

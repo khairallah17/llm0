@@ -21,12 +21,12 @@ class CrawlerDispatcher:
         return dispatcher
 
     def register_medium(self) -> "CrawlerDispatcher":
-        self.register("http://medium.com", MediumCrawler)
+        self.register("https://medium.com", MediumCrawler)
 
         return self
 
     def register_linkedin(self) -> "CrawlerDispatcher":
-        self.register("http://linkedin.com", LinkedinCrawler)
+        self.register("https://linkedin.com", LinkedinCrawler)
 
         return self
 
@@ -36,6 +36,7 @@ class CrawlerDispatcher:
         return self
 
     def register(self, domain: str, crawler: type[BaseCrawler]) -> None:
+        
         parsed_domain = urlparse(domain)
         domain = parsed_domain.netloc
 
@@ -44,9 +45,9 @@ class CrawlerDispatcher:
     def get_crawler(self, url: str) -> BaseCrawler:
         for pattern, crawler in self._crawlers.items():
             if re.match(pattern, url):
-                return crawler
+                return crawler()
 
-            else:
-                logger.warning(f"No crawler found for {url}. Defaulting to CustomArticleCrawler")
+        else:
+            logger.warning(f"No crawler found for {url}. Defaulting to CustomArticleCrawler")
 
-                return CustomArticleCrawler()
+            return CustomArticleCrawler()

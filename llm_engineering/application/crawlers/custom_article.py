@@ -12,7 +12,12 @@ from .base import BaseCrawler
 
 class CustomArticleCrawler(BaseCrawler):
 
-    def __init__(self, link: str, **kwargs):
+    model = ArticleDocument
+
+    def __init__(self):
+        super().__init__()
+
+    def extract(self, link: str, **kwargs) -> None:
         old_model = self.model.find(link=link)
         if old_model is not None:
             logger.info(f"Article already exists in the database: {link}")
@@ -34,6 +39,8 @@ class CustomArticleCrawler(BaseCrawler):
             "Content": doc_transformed.page_content,
             "language": doc_transformed.metadata.get("language")
         }
+
+        logger.info(f"EXTRACTED ARTICLE {content}")
 
         parsed_url = urlparse(link)
         platform = parsed_url.netloc

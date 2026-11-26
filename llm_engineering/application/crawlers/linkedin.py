@@ -1,24 +1,28 @@
+from loguru import get_logger
+
 from selenium.webdriver.common.by import By
 
 from .base import BaseSeleniumCrawler
 
-from llm_engineering.domain.documents import ArticleDocument
+from llm_engineering.domain.documents import PostDocument
 from llm_engineering.settings import settings
+
+logger = get_logger(__name__)
 
 class LinkedinCrawler(BaseSeleniumCrawler):
     
-    model = ArticleDocument
+    model = PostDocument
 
     def __init__(self, scroll_limit: int = 5, is_deprecated: bool = True) -> None:
         super().__init__(scroll_limit)
 
-        self.is_deprecated = is_deprecated
+        self._is_deprecated = is_deprecated
 
     def set_extra_driver_options(self, options):
         options.add_argument("detach", True)
 
     def login(self) -> None:
-        if self.is_deprecated:
+        if self._is_deprecated:
            raise DeprecationWarning(
                "As Linkedin has updated its security measures, the login() method is no longer supported"
            )
@@ -37,6 +41,28 @@ class LinkedinCrawler(BaseSeleniumCrawler):
 
         except Exception as e:
 
-            print(f"ERROR: {e}")
+            logger.error(f"error {e!s}")
 
-    # NEEDS MORE IMPLEMENTATION
+    def extract(self, link: str, **kwargs) -> None:
+        if self._is_deprecated:
+            raise DeprecationWarning(
+                "As linkedin has updated its security measures, the extract() method is no longer supported"
+            )
+
+        if self.model.link is not None:
+            old_model = self.model.find(link=link)
+            if old_model is not None:
+                logger.info(f"Post already exists in the database: {link}")
+
+                return
+
+        logger.info(f"Starting scraping data for profile: {link}")
+
+        self.login()
+
+        soup = self._get_page_content(link)
+
+        data = {
+            "Name": self._Scrape_section(soup, "h1", class_="text-heading-xlarge")
+        }
+    

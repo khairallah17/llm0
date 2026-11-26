@@ -32,7 +32,7 @@ class ArticleDocument(Document):
     class Settings:
         name = DataCategory.ARTICLES
 
-class UserDocument(Document):
+class UserDocument(NoSQLBaseDocument):
     first_name: str
     last_name: str
 
