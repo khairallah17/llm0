@@ -1,7 +1,10 @@
 from pathlib import Path
 from datetime import datetime as dt
+
 from pipelines import data_etl
 from pipelines.hello import hello_pipeline
+
+from steps import load_to_db_vector
 
 
 def main():
